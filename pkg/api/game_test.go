@@ -27,3 +27,19 @@ func TestShouldThrowIfPlayerOneNameIsMissing(t *testing.T) {
         t.Errorf("Expected: %s, got %s", want, err)
     } 
 }
+
+func TestShouldThrowIfTimerIsMissing(t *testing.T) {
+    repo := &mockGameRepository{}
+    g := gameService{repo}
+
+    gameData := newGameData{
+        PlayerOne: "test",
+    }
+
+    want := errors.New("Timer is required")
+    _, err := g.NewGame(gameData)
+
+    if err.Error() != want.Error() {
+        t.Errorf("Expected: %s, got %s", want, err)
+    } 
+}
