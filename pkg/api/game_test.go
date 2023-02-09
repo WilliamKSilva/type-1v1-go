@@ -9,6 +9,8 @@ import (
 type mockGameRepository struct {}
 
 func (m *mockGameRepository) Create (game *Game) error {
+    game.ID = 1 
+    game.Text = "bla bla bla bla"
     return nil
 }
 
@@ -43,3 +45,26 @@ func TestShouldThrowIfTimerIsMissing(t *testing.T) {
         t.Errorf("Expected: %s, got %s", want, err)
     } 
 }
+
+func TestShouldReturnAGameOnSuccess(t *testing.T) {
+    repo := &mockGameRepository{}
+    g := gameService{repo}
+
+    gameData := newGameData{
+        PlayerOne: "test",
+        Timer: 160,
+    }
+
+    game, _ := g.NewGame(gameData)
+    want := &Game{
+        ID: 1,
+        PlayerOne: "test",
+        Timer: 160,
+        Text: "bla bla bla bla",
+    }
+
+    if game.ID != want.ID {
+        t.Errorf("Expected: %d, got %d", want.ID, game.ID)
+    } 
+}
+
