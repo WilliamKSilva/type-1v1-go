@@ -16,7 +16,7 @@ type newGameData struct {
 }
 
 type GameRepository interface {
-    Create (game *Game) (*Game, error)
+    Create (game *Game) error
 }
 
 type gameService struct {
@@ -32,7 +32,7 @@ func (g *gameService) NewGame(data newGameData) (*Game, error) {
         return nil, errors.New("Timer is required")
     }
 
-    gameData := &Game{
+    game := &Game{
         ID: 0,
         PlayerOne: data.PlayerOne,
         PlayerTwo: "",
@@ -40,7 +40,7 @@ func (g *gameService) NewGame(data newGameData) (*Game, error) {
         Text: "",
     }
 
-    game, err := g.repo.Create(gameData) 
+    err := g.repo.Create(game) 
 
     if err != nil {
         return nil, err
