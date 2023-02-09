@@ -1,5 +1,7 @@
 package api
 
+import "errors"
+
 type Game struct {
     ID uint `json:"id"` 
     PlayerOne string `json:"player_one"`
@@ -11,4 +13,38 @@ type Game struct {
 type newGameData struct {
     PlayerOne string `json:"player_one"` 
     Timer uint `json:"timer"`
+}
+
+type GameRepository interface {
+    Create (game *Game) (*Game, error)
+}
+
+type gameService struct {
+    repo GameRepository
+}
+
+func (g *gameService) NewGame(data newGameData) (*Game, error) {
+    if (data.PlayerOne == "") {
+        return nil, errors.New("Player one name is required")
+    }
+
+    if (data.Timer == 0) {
+        return nil, errors.New("Timer is required")
+    }
+
+    gameData := &Game{
+        ID: 0,
+        PlayerOne: data.PlayerOne,
+        PlayerTwo: "",
+        Timer: data.Timer,
+        Text: "",
+    }
+
+    game, err := g.repo.Create(gameData) 
+
+    if err != nil {
+        return nil, err
+    }
+
+    return game, err
 }
