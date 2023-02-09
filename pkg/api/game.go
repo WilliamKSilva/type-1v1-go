@@ -9,5 +9,6 @@ type Game struct {
 }
 
 type newGameData struct {
+    PlayerOne string `json:"player_one"` 
     Timer uint `json:"timer"`
 }
