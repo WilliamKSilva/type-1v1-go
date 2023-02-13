@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/WilliamKSilva/type-1v1/pkg/api"
@@ -15,4 +15,8 @@ func main() {
     gameRepository := mysql.NewGameRepository(db)
     gameService := api.NewGameService(gameRepository)
     gameHandler := web.NewGameHandler(gameService) 
+
+    http.HandleFunc("/bar", gameHandler.NewGameFunc)
+
+    log.Fatal(http.ListenAndServe(":3000", nil))
 }

@@ -18,8 +18,7 @@ func NewGameHandler (gameService api.GameServiceInterface) *GameHandler {
 
 func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
     gameData := &api.NewGameData{}
-    body := r.Body
-    jsonData, err := io.ReadAll(body)
+    jsonData, err := io.ReadAll(r.Body)
 
     if err != nil {
         w.WriteHeader(http.StatusBadRequest)
@@ -30,7 +29,7 @@ func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
 
     if err != nil {
         w.WriteHeader(http.StatusBadRequest)
-        w.Write(nil) 
+        w.Write([]byte(err.Error())) 
     }
 
     game, err := g.gameService.NewGame(*gameData)
