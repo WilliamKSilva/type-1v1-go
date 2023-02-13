@@ -1,7 +1,6 @@
 package web
 
 import (
-	"bytes"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -10,10 +9,14 @@ import (
 )
 
 type GameHandler struct {
-    gameService api.GameService 
+    gameService api.GameServiceInterface 
 }
 
-func (g *GameHandler) NewGameHandler (w http.ResponseWriter, r *http.Request) {
+func NewGameHandler (gameService api.GameServiceInterface) *GameHandler {
+    return &GameHandler{gameService}
+}
+
+func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
     gameData := &api.NewGameData{}
     body := r.Body
     jsonData, err := io.ReadAll(body)

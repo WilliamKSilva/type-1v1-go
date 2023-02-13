@@ -19,12 +19,16 @@ type GameRepository interface {
     Create (game *Game) error
 }
 
-type GameService interface {
+type GameServiceInterface interface {
     NewGame(data NewGameData) (*Game, error)
 }
 
 type gameService struct {
     repo GameRepository
+}
+
+func NewGameService (repo GameRepository) *gameService {
+    return &gameService{repo}
 }
 
 func (g *gameService) NewGame(data NewGameData) (*Game, error) {

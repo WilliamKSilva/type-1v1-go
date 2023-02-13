@@ -5,11 +5,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type gameRepository struct {
+type gameRepositoryDB struct {
     connection *gorm.DB
 }
 
-func (db *gameRepository) Create(game *api.Game) error {
+func NewGameRepository (db *gorm.DB) *gameRepositoryDB {
+    return &gameRepositoryDB{db} 
+} 
+
+func (db *gameRepositoryDB) Create(game *api.Game) error {
     err := db.connection.Create(game).Error
 
     if err != nil {

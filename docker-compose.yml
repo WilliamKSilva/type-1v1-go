@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: type1v1
+      MYSQL_DATABASE: type1v1
+      MYSQL_USER: type1v1user
+      MYSQL_PASSWOD: type1v1
+    ports:
+      - '3306:3306'
+    volumes:
+      - dbtype1v1:/volume
+
+volumes:
+  dbtype1v1:
+
