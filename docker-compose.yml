@@ -6,6 +6,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: type1v1
+      MYSQL_ROOT_USER: root
       MYSQL_DATABASE: type1v1
       MYSQL_USER: type1v1user
       MYSQL_PASSWOD: type1v1
