@@ -18,7 +18,7 @@ func TestShouldThrowIfPlayerOneNameIsMissing(t *testing.T) {
     repo := &mockGameRepository{}
     g := gameService{repo}
 
-    gameData := newGameData{
+    gameData := NewGameData{
         Timer: 120,
     }
 
@@ -34,7 +34,7 @@ func TestShouldThrowIfTimerIsMissing(t *testing.T) {
     repo := &mockGameRepository{}
     g := gameService{repo}
 
-    gameData := newGameData{
+    gameData := NewGameData{
         PlayerOne: "test",
     }
 
@@ -50,7 +50,7 @@ func TestShouldReturnAGameOnSuccess(t *testing.T) {
     repo := &mockGameRepository{}
     g := gameService{repo}
 
-    gameData := newGameData{
+    gameData := NewGameData{
         PlayerOne: "test",
         Timer: 160,
     }
@@ -60,6 +60,7 @@ func TestShouldReturnAGameOnSuccess(t *testing.T) {
         ID: 1,
         PlayerOne: "test",
         Timer: 160,
+        Status: Waiting,
         Text: "bla bla bla bla",
     }
 

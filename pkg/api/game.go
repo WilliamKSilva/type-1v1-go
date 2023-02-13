@@ -2,10 +2,17 @@ package api
 
 import "errors"
 
+const (
+    Waiting string = "waiting"
+    Started string = "started"
+    Finished string = "finished"
+)
+
 type Game struct {
     ID uint `json:"id"` 
     PlayerOne string `json:"player_one"`
     PlayerTwo string `json:"player_two"`
+    Status string `json:"status"`
     Text string `json:"text"`
     Timer uint `json:"timer"`
 }
@@ -44,6 +51,7 @@ func (g *gameService) NewGame(data NewGameData) (*Game, error) {
         ID: 0,
         PlayerOne: data.PlayerOne,
         PlayerTwo: "",
+        Status: Waiting,
         Timer: data.Timer,
         Text: "",
     }
