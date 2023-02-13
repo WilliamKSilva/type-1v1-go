@@ -10,7 +10,7 @@ type Game struct {
     Timer uint `json:"timer"`
 }
 
-type newGameData struct {
+type NewGameData struct {
     PlayerOne string `json:"player_one"` 
     Timer uint `json:"timer"`
 }
@@ -19,11 +19,15 @@ type GameRepository interface {
     Create (game *Game) error
 }
 
+type GameService interface {
+    NewGame(data NewGameData) (*Game, error)
+}
+
 type gameService struct {
     repo GameRepository
 }
 
-func (g *gameService) NewGame(data newGameData) (*Game, error) {
+func (g *gameService) NewGame(data NewGameData) (*Game, error) {
     if (data.PlayerOne == "") {
         return nil, errors.New("Player one name is required")
     }
