@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-type TextService interface {
-    GetRandomText (trigger string) (string, error)
+type TextServiceInterface interface {
+	GetRandomText(trigger string) (string, error)
 }
 
 type WordResult struct {
@@ -18,26 +18,32 @@ type WordResult struct {
 
 var AvaiableWordTriggers = [4]string{"apple", "cow", "computer", "games"}
 
-func GetRandomText(trigger string) (string, error) {
+type textService struct{}
+
+func NewTextService () *textService {
+    return &textService{}
+}
+
+func (t *textService) GetRandomText(trigger string) (string, error) {
 	var text string
 
-    wordsResult := &[]WordResult{} 
+	wordsResult := &[]WordResult{}
 
 	resp, err := http.Get(fmt.Sprintf("https://api.datamuse.com/words?rel_trg=%s", trigger))
 
-    if err != nil {
-        return "", err
-    }
+	if err != nil {
+		return "", err
+	}
 
-    defer resp.Body.Close()
+	defer resp.Body.Close()
 
-    body, err := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 
-    json.Unmarshal(body, wordsResult)
+	json.Unmarshal(body, wordsResult)
 
-    for _, r := range *wordsResult {
-       text = text + fmt.Sprintf(" %s", r.Word) 
-    }
+	for _, r := range *wordsResult {
+		text = text + fmt.Sprintf(" %s", r.Word)
+	}
 
-    return text, nil
+	return text, nil
 }

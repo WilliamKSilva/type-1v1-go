@@ -16,6 +16,8 @@ type mockTextService struct {
 
 func (m *mockGameRepository) Create (game *Game) error {
    args := m.Called(game)
+   
+   game.ID = 1 
 
    return args.Error(1) 
 }
@@ -30,8 +32,8 @@ func TestShouldThrowIfPlayerOneNameIsMissing(t *testing.T) {
     repo := new(mockGameRepository)
     textService := new(mockTextService)
 
-    repo.On("Create", mock.Anything).Return(errors.New("Player one name is required"))
-    repo.On("GetRandomText", mock.Anything).Return("bla bla bla bla", nil)
+    repo.On("Create", mock.Anything).Return(nil, nil)
+    textService.On("GetRandomText", mock.Anything).Return("bla bla bla bla", nil)
 
     g := gameService{repo, textService}
 
@@ -46,19 +48,34 @@ func TestShouldThrowIfPlayerOneNameIsMissing(t *testing.T) {
 }
 
 func TestShouldThrowIfTextServiceThrows(t *testing.T) {
-    repo := &mockGameRepository{}
-    g := gameService{repo}
+    repo := new(mockGameRepository)
+    textService := new(mockTextService)
+
+    repo.On("Create", mock.Anything).Return(nil, nil)
+    textService.On("GetRandomText", mock.Anything).Return("", errors.New("Internal Server Error"))
+
+    g := gameService{repo, textService}
 
     gameData := NewGameData{
         PlayerOne: "test",
     }
 
-    game, _ := g.NewGame(gameData)
+    want := errors.New("Internal Server Error")
+    _, err := g.NewGame(gameData)
+
+    if err.Error() != want.Error() {
+        t.Errorf("Expected: %s, got %s", want, err)
+    }
 }
 
 func TestShouldReturnAGameOnSuccess(t *testing.T) {
-    repo := &mockGameRepository{}
-    g := gameService{repo}
+    repo := new(mockGameRepository)
+    textService := new(mockTextService)
+
+    repo.On("Create", mock.Anything).Return(nil, nil)
+    textService.On("GetRandomText", mock.Anything).Return("bla bla bla bla", nil)
+
+    g := gameService{repo, textService}
 
     gameData := NewGameData{
         PlayerOne: "test",

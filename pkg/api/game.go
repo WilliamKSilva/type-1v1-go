@@ -35,10 +35,10 @@ type GameServiceInterface interface {
 
 type gameService struct {
     repo GameRepository
-    textService infra.TextService
+    textService infra.TextServiceInterface
 }
 
-func NewGameService (repo GameRepository, textService infra.TextService) *gameService {
+func NewGameService (repo GameRepository, textService infra.TextServiceInterface) *gameService {
     return &gameService{repo, textService}
 }
 
