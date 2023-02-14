@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+type TextService interface {
+    GetRandomText (trigger string) (string, error)
+}
+
 type WordResult struct {
 	Word  string `json:"word"`
 	Score uint   `json:"score"`
@@ -14,15 +18,15 @@ type WordResult struct {
 
 var AvaiableWordTriggers = [4]string{"apple", "cow", "computer", "games"}
 
-func GetRelatedWords(trigger string) ([]string, error) {
-	var words []string
+func GetRandomText(trigger string) (string, error) {
+	var text string
 
     wordsResult := &[]WordResult{} 
 
 	resp, err := http.Get(fmt.Sprintf("https://api.datamuse.com/words?rel_trg=%s", trigger))
 
     if err != nil {
-        return nil, err
+        return "", err
     }
 
     defer resp.Body.Close()
@@ -31,9 +35,9 @@ func GetRelatedWords(trigger string) ([]string, error) {
 
     json.Unmarshal(body, wordsResult)
 
-    for i, w := range *wordsResult {
-       words[i] = w.Word 
+    for _, r := range *wordsResult {
+       text = text + fmt.Sprintf(" %s", r.Word) 
     }
 
-    return words, nil
+    return text, nil
 }

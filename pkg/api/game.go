@@ -1,6 +1,11 @@
 package api
 
-import "errors"
+import (
+	"errors"
+	"math/rand"
+
+	"github.com/WilliamKSilva/type-1v1/pkg/infra"
+)
 
 const (
     Waiting string = "waiting"
@@ -30,10 +35,11 @@ type GameServiceInterface interface {
 
 type gameService struct {
     repo GameRepository
+    textService infra.TextService
 }
 
-func NewGameService (repo GameRepository) *gameService {
-    return &gameService{repo}
+func NewGameService (repo GameRepository, textService infra.TextService) *gameService {
+    return &gameService{repo, textService}
 }
 
 func (g *gameService) NewGame(data NewGameData) (*Game, error) {
@@ -41,15 +47,22 @@ func (g *gameService) NewGame(data NewGameData) (*Game, error) {
         return nil, errors.New("Player one name is required")
     }
 
+    randomWordTrigger := infra.AvaiableWordTriggers[rand.Intn(4)]
+    text, err := g.textService.GetRandomText(randomWordTrigger)
+
+    if err != nil {
+        return nil, errors.New("Internal Server Error") 
+    }
+
     game := &Game{
         ID: 0,
         PlayerOne: data.PlayerOne,
         PlayerTwo: "",
         Status: Waiting,
-        Text: "",
+        Text: text,
     }
 
-    err := g.repo.Create(game) 
+    err = g.repo.Create(game) 
 
     if err != nil {
         return nil, err
