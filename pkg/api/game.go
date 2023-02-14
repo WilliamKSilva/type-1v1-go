@@ -14,12 +14,10 @@ type Game struct {
     PlayerTwo string `json:"player_two"`
     Status string `json:"status"`
     Text string `json:"text"`
-    Timer uint `json:"timer"`
 }
 
 type NewGameData struct {
     PlayerOne string `json:"player_one"` 
-    Timer uint `json:"timer"`
 }
 
 type GameRepository interface {
@@ -43,16 +41,11 @@ func (g *gameService) NewGame(data NewGameData) (*Game, error) {
         return nil, errors.New("Player one name is required")
     }
 
-    if (data.Timer == 0) {
-        return nil, errors.New("Timer is required")
-    }
-
     game := &Game{
         ID: 0,
         PlayerOne: data.PlayerOne,
         PlayerTwo: "",
         Status: Waiting,
-        Timer: data.Timer,
         Text: "",
     }
 
