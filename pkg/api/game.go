@@ -25,12 +25,19 @@ type NewGameData struct {
     PlayerOne string `json:"player_one"` 
 }
 
+type UpdateGameData struct {
+    PlayerTwo string `json:"player_two"` 
+    Status string `json:"status"`
+}
+
 type GameRepository interface {
     Create (game *Game) error
+    Update (id uint, gameData UpdateGameData) (*Game, error)
 }
 
 type GameServiceInterface interface {
     NewGame(data NewGameData) (*Game, error)
+    UpdateGame(id uint, data UpdateGameData) (*Game, error)
 }
 
 type gameService struct {
@@ -69,4 +76,18 @@ func (g *gameService) NewGame(data NewGameData) (*Game, error) {
     }
 
     return game, err
+}
+
+func (g *gameService) UpdateGame(id uint, data UpdateGameData) (*Game, error) {
+    if data.Status == "" && data.PlayerTwo == "" {
+        return nil, errors.New("Provide valid data to update an Game")
+    }
+
+    game, err := g.repo.Update(id, data)
+
+    if err != nil {
+        return nil, err
+    }
+
+    return game, nil
 }
