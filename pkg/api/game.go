@@ -4,7 +4,7 @@ import (
 	"errors"
 	"math/rand"
 
-	"github.com/WilliamKSilva/type-1v1/pkg/infra"
+	"github.com/WilliamKSilva/type-1v1/pkg/ex"
 )
 
 const (
@@ -42,10 +42,10 @@ type GameServiceInterface interface {
 
 type gameService struct {
     repo GameRepository
-    textService infra.TextServiceInterface
+    textService ex.TextServiceInterface
 }
 
-func NewGameService (repo GameRepository, textService infra.TextServiceInterface) *gameService {
+func NewGameService (repo GameRepository, textService ex.TextServiceInterface) *gameService {
     return &gameService{repo, textService}
 }
 
@@ -54,7 +54,7 @@ func (g *gameService) NewGame(data NewGameData) (*Game, error) {
         return nil, errors.New("Player one name is required")
     }
 
-    randomWordTrigger := infra.AvaiableWordTriggers[rand.Intn(4)]
+    randomWordTrigger := ex.AvaiableWordTriggers[rand.Intn(4)]
     text, err := g.textService.GetRandomText(randomWordTrigger)
 
     if err != nil {
