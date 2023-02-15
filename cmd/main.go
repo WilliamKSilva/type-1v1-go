@@ -11,14 +11,14 @@ import (
 )
 
 func main() {
-    db := mysql.Connect() 
+	db := mysql.Connect()
 
-    gameRepository := mysql.NewGameRepository(db)
-    textService := infra.NewTextService()
-    gameService := api.NewGameService(gameRepository, textService)
-    gameHandler := web.NewGameHandler(gameService) 
+	gameRepository := mysql.NewGameRepository(db)
+	textService := infra.NewTextService()
+	gameService := api.NewGameService(gameRepository, textService)
+	gameHandler := web.NewGameHandler(gameService)
 
-    http.HandleFunc("/bar", gameHandler.NewGameFunc)
+	http.Handle("/games", gameHandler)
 
-    log.Fatal(http.ListenAndServe(":3000", nil))
+	log.Fatal(http.ListenAndServe(":3000", nil))
 }
