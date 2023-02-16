@@ -65,7 +65,7 @@ func (g *GameHandler) UpdateGameFunc (w http.ResponseWriter, r *http.Request) {
     data, err := io.ReadAll(body)
 
     if err != nil {
-        w.WriteHeader(400)
+        w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(err.Error()))
     }
 
@@ -74,24 +74,24 @@ func (g *GameHandler) UpdateGameFunc (w http.ResponseWriter, r *http.Request) {
     u64, err := strconv.Atoi(id)
 
     if err != nil {
-        w.WriteHeader(400)
+        w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(err.Error()))
     }
 
     game, err := g.gameService.UpdateGame(uint(u64), *updateGameData)
 
     if err != nil {
-        w.WriteHeader(400)
+        w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(err.Error()))
     }
 
     resp, err := json.Marshal(game)
 
     if err != nil {
-        w.WriteHeader(400)
+        w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(err.Error()))
     }
 
-    w.WriteHeader(200)
+    w.WriteHeader(http.StatusOK)
     w.Write(resp)
 }
