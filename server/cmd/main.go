@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/WilliamKSilva/type-1v1/pkg/api/mysql"
 	"github.com/WilliamKSilva/type-1v1/pkg"
+	"github.com/WilliamKSilva/type-1v1/pkg/api/mysql"
 )
 
 func main() {
@@ -14,6 +14,7 @@ func main() {
     gameHandler := pkg.MakeGameHandler(db) 
 
 	http.Handle("/games", gameHandler)
+    http.HandleFunc("/games/run", gameHandler.RunGameFunc)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }

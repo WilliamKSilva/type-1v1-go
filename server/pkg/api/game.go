@@ -41,7 +41,7 @@ type GameRepository interface {
 type GameServiceInterface interface {
     NewGame(data NewGameData) (*Game, error)
     UpdateGame(id uint, data UpdateGameData) (*Game, error)
-    RunGame(player string, id uint, text string, c chan *Game)
+    RunGame(player string, id uint, text string) (*Game)
 }
 
 type gameService struct {
@@ -97,7 +97,7 @@ func (g *gameService) UpdateGame(id uint, data UpdateGameData) (*Game, error) {
     return game, nil
 }
 
-func (g *gameService) RunGame(player string, id uint, text string, c chan *Game) {
+func (g *gameService) RunGame(player string, id uint, text string) (*Game) {
     game, err := g.repo.Find(id) 
 
     if err != nil {
@@ -115,7 +115,8 @@ func (g *gameService) RunGame(player string, id uint, text string, c chan *Game)
 
        g.repo.Update(id, updateGameData)
 
-
-       c <- game
+       return game
     }
+
+    return nil
 }
