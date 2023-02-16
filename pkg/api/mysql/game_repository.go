@@ -26,8 +26,8 @@ func (db *gameRepositoryDB) Create(game *api.Game) error {
 }
 
 func (db *gameRepositoryDB) Update(id uint, updateGameData api.UpdateGameData) (*api.Game, error) {
-    var updatedGame *api.Game
-    err := db.connection.Model(updatedGame).Where("id = ?", id).Updates(api.Game{Status: updateGameData.Status, PlayerTwo: updateGameData.PlayerTwo}).Error
+    updatedGame := &api.Game{}
+    err := db.connection.Model(updatedGame).Where("id = ?", id).Updates(&api.Game{Status: updateGameData.Status, PlayerTwo: updateGameData.PlayerTwo}).Error
 
     if err != nil {
         return nil, errors.New(err.Error())
