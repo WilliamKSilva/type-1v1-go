@@ -124,7 +124,7 @@ func (g *GameHandler) UpdateGameFunc (w http.ResponseWriter, r *http.Request) {
 
 func (g *GameHandler) RunGameFunc(w  http.ResponseWriter, r *http.Request) {
     ctx := context.Background()
-    ctx, cancel := context.WithTimeout(ctx, time.Second * 4)
+    ctx, cancel := context.WithTimeout(ctx, time.Minute * 4)
 
     defer cancel()
 
