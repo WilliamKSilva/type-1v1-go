@@ -19,6 +19,7 @@ type Game struct {
     PlayerTwo string `json:"player_two"`
     Status string `json:"status"`
     Text string `json:"text"`
+    Winner string `json:"Winner"`
 }
 
 type NewGameData struct {
@@ -67,6 +68,7 @@ func (g *gameService) NewGame(data NewGameData) (*Game, error) {
         PlayerTwo: "",
         Status: Waiting,
         Text: text,
+        Winner: "",
     }
 
     err = g.repo.Create(game) 

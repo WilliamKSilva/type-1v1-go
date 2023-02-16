@@ -96,6 +96,7 @@ func TestShouldReturnAGameOnSuccess(t *testing.T) {
         PlayerOne: "test",
         Status: Waiting,
         Text: "bla bla bla bla",
+        Winner: "",
     }
 
     if game.ID != want.ID {
