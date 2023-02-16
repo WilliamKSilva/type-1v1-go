@@ -1,16 +1,24 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/WilliamKSilva/type-1v1/pkg/api"
+	"github.com/gorilla/websocket"
 )
 
 type GameHandler struct {
     gameService api.GameServiceInterface 
+}
+
+var upgrader = websocket.Upgrader{
+    ReadBufferSize: 1024,
+    WriteBufferSize: 1024,
 }
 
 func NewGameHandler (gameService api.GameServiceInterface) *GameHandler {
@@ -94,4 +102,44 @@ func (g *GameHandler) UpdateGameFunc (w http.ResponseWriter, r *http.Request) {
 
     w.WriteHeader(http.StatusOK)
     w.Write(resp)
+}
+
+type runGameData struct {
+    Player string `json:"player"` 
+    Text string `json:"text"` 
+    Id string `json:"id"`
+}
+
+func (g *GameHandler) RunGameFunc(w  http.ResponseWriter, r *http.Request) {
+    ctx := context.Background()
+    ctx, cancel := context.WithTimeout(ctx, time.Minute * 3)
+    defer cancel()
+
+    clientData := &runGameData{}
+    
+    conn, err := upgrader.Upgrade(w, r, nil)
+
+    if err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(err.Error()))
+    }
+
+    conn.ReadJSON(clientData)
+
+    u64, err := strconv.Atoi(clientData.Id)
+
+    gamechan := make(chan *api.Game)
+    go g.gameService.RunGame(clientData.Player, uint(u64), clientData.Text, gamechan)
+
+    select {
+    case <- gamechan:
+        json, _ := json.Marshal(gamechan)
+
+        w.WriteHeader(http.StatusOK)
+        w.Write(json)
+    case <- ctx.Done():
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte("Timeout exceeded"))
+    }
+
 }

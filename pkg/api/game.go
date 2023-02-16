@@ -29,16 +29,19 @@ type NewGameData struct {
 type UpdateGameData struct {
     PlayerTwo string `json:"player_two"` 
     Status string `json:"status"`
+    Winner string `json:"winner"`
 }
 
 type GameRepository interface {
     Create (game *Game) error
     Update (id uint, gameData UpdateGameData) (*Game, error)
+    Find (id uint) (*Game, error)
 }
 
 type GameServiceInterface interface {
     NewGame(data NewGameData) (*Game, error)
     UpdateGame(id uint, data UpdateGameData) (*Game, error)
+    RunGame(player string, id uint, text string, c chan *Game)
 }
 
 type gameService struct {
@@ -92,4 +95,27 @@ func (g *gameService) UpdateGame(id uint, data UpdateGameData) (*Game, error) {
     }
 
     return game, nil
+}
+
+func (g *gameService) RunGame(player string, id uint, text string, c chan *Game) {
+    game, err := g.repo.Find(id) 
+
+    if err != nil {
+        panic(err)
+    }
+
+    if text == game.Text {
+       game.Status = Finished 
+       game.Winner = player
+
+       updateGameData := UpdateGameData{
+           Status: Finished,
+           Winner: player,
+       }
+
+       g.repo.Update(id, updateGameData)
+
+
+       c <- game
+    }
 }

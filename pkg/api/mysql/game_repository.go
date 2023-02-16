@@ -35,3 +35,14 @@ func (db *gameRepositoryDB) Update(id uint, updateGameData api.UpdateGameData) (
 
     return updatedGame, nil 
 }
+
+func (db *gameRepositoryDB) Find (id uint) (*api.Game, error) {
+    game := &api.Game{}
+    err := db.connection.First(game, id).Error
+
+    if err != nil {
+        return nil, errors.New(err.Error())
+    }
+
+    return game, nil
+}
