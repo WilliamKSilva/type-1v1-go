@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output } from '@angular/core';
 
 @Component({
   selector: 'app-modal-input',
@@ -8,7 +8,13 @@ import { Component } from '@angular/core';
 export class ModalInputComponent {
     inputTitle: string | undefined = "Nickname" 
 
-    active: boolean = true 
+    @Output() inputText: string | undefined
+
+    active: boolean = false 
+
+    updateInputText (event: Event): void {
+        this.inputText = (event.target as HTMLInputElement).value
+    }
 
     updateModalActive (state: boolean): void {
         this.active = state

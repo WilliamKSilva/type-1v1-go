@@ -3,7 +3,7 @@
         <div class="modal">
             <section class="modal-content">
                 <label>{{inputTitle}}</label>
-                <input placeholder="Enter the value..." />
+                <input placeholder="Enter the value..." (input)="updateInputText($event)" />
             </section>
         </div>
     </div>
