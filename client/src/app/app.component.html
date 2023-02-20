@@ -10,6 +10,7 @@
        <button class="new-game-button" (click)="newGame({playerOne})">New Game</button>
        <button class="enter-game-button">Enter Game</button>
 
+       <app-loading [isLoading]="isLoading" />
        <app-modal-input (inputText)="updatePlayerOne($event)" />
     </main>
 </div>

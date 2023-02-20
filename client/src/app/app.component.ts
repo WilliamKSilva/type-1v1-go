@@ -16,14 +16,22 @@ export class AppComponent {
 
   gameURL: string = 'http://localhost:3000/games'
 
-  playerOne: string = ""
+  playerOne: string | undefined
+
+  isLoading: boolean = false
 
   updatePlayerOne(name: string) {
     this.playerOne = name
   }
 
   newGame (data: NewGameData): Observable<Game> {
-   return this.http.post<Game>(this.gameURL, data)
+    this.isLoading = true
+
+    const game = this.http.post<Game>(this.gameURL, data)
+
+    this.isLoading = false
+
+    return game
   }
 
 }

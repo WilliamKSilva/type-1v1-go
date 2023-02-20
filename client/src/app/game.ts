@@ -7,4 +7,6 @@ export interface Game {
     text: string;
 }
 
-export type NewGameData = Pick<Game, 'playerOne'> 
+export type NewGameData = {
+    playerOne?: string
+}
