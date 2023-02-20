@@ -25,6 +25,8 @@ export class AppComponent {
   }
 
   newGame (data: NewGameData): Observable<Game> {
+    this.modalActive = false 
+
     this.isLoading = true
 
     const game = this.http.post<Game>(this.gameURL, data)

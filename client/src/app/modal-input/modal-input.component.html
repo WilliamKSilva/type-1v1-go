@@ -4,6 +4,11 @@
             <section class="modal-content">
                 <label>{{inputTitle}}</label>
                 <input placeholder="Enter the value..." (input)="updateInputText($event)" />
+
+                <div class="modal-footer">
+                    <button class="modal-confirm-button">Create</button>
+                    <button class="modal-cancel-button">Cancel</button>
+                </div>
             </section>
         </div>
     </div>
