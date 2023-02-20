@@ -7,10 +7,10 @@
             who types faster!
         </p>
        </section> 
-       <button class="new-game-button" (click)="newGame()">New Game</button>
+       <button class="new-game-button" (click)="newGame({playerOne})">New Game</button>
        <button class="enter-game-button">Enter Game</button>
 
-       <app-modal-input />
+       <app-modal-input (inputText)="updatePlayerOne($event)" />
     </main>
 </div>
 

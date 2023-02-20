@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-modal-input',
@@ -8,12 +8,12 @@ import { Component, Output } from '@angular/core';
 export class ModalInputComponent {
     inputTitle: string | undefined = "Nickname" 
 
-    @Output() inputText: string | undefined
+    @Output() inputText = new EventEmitter<string>()
 
     active: boolean = false 
 
     updateInputText (event: Event): void {
-        this.inputText = (event.target as HTMLInputElement).value
+        this.inputText.emit((event.target as HTMLInputElement).value)
     }
 
     updateModalActive (state: boolean): void {

@@ -16,6 +16,12 @@ export class AppComponent {
 
   gameURL: string = 'http://localhost:3000/games'
 
+  playerOne: string = ""
+
+  updatePlayerOne(name: string) {
+    this.playerOne = name
+  }
+
   newGame (data: NewGameData): Observable<Game> {
    return this.http.post<Game>(this.gameURL, data)
   }
