@@ -20,20 +20,30 @@ export class AppComponent {
 
   isLoading: boolean = false
 
+  modalActive: boolean = false
+
+  createdGame: Game | undefined
+
   updatePlayerOne(name: string) {
     this.playerOne = name
-  }
+  } 
 
-  newGame (data: NewGameData): Observable<Game> {
+  openModal(): void {
+      this.modalActive = true
+  }
+ 
+  newGame (data: NewGameData): Game | undefined {
     this.modalActive = false 
 
     this.isLoading = true
 
-    const game = this.http.post<Game>(this.gameURL, data)
+    this.http.post<Game>(this.gameURL, data).subscribe(data => this.createdGame = data)
 
     this.isLoading = false
 
-    return game
+    console.log(this.createdGame)
+
+    return this.createdGame
   }
 
 }

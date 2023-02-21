@@ -9,11 +9,18 @@ export class ModalInputComponent {
     inputTitle: string | undefined = "Nickname" 
 
     @Output() inputText = new EventEmitter<string>()
-    @Input() active: boolean = false; 
+    @Input() active: boolean = false 
+    @Output() onConfirm: EventEmitter<any> = new EventEmitter() 
+
+    confirmClicked(): void {
+        this.onConfirm.emit()
+    }
 
     updateInputText (event: Event): void {
         this.inputText.emit((event.target as HTMLInputElement).value)
     }
 
-    closeModal ()
+    closeModal(): void {
+        this.active = false
+    }
 }

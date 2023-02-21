@@ -11,7 +11,7 @@
        <button class="enter-game-button">Enter Game</button>
 
        <app-loading [isLoading]="isLoading" />
-       <app-modal-input [active]="modalActive" (inputText)="updatePlayerOne($event)" />
+       <app-modal-input [active]="modalActive" (onConfirm)="newGame({playerOne})" (inputText)="updatePlayerOne($event)" />
     </main>
 </div>
 

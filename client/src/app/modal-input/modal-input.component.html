@@ -6,8 +6,8 @@
                 <input placeholder="Enter the value..." (input)="updateInputText($event)" />
 
                 <div class="modal-footer">
-                    <button class="modal-confirm-button">Create</button>
-                    <button class="modal-cancel-button">Cancel</button>
+                    <button class="modal-confirm-button" (click)="confirmClicked()">Create</button>
+                    <button class="modal-cancel-button" (click)="closeModal()">Cancel</button>
                 </div>
             </section>
         </div>
