@@ -31,6 +31,14 @@ func (m *mockGameRepository) Update (id uint, data UpdateGameData) (*Game, error
    return game, args.Error(1) 
 }
 
+func (m *mockGameRepository) Find (id uint) (*Game, error) {
+    args := m.Called(id)
+
+    game := args.Get(0).(*Game) 
+
+    return game, args.Error(1)
+}
+
 func (m *mockTextService) GetRandomText (trigger string) (string, error) {
    args := m.Called(trigger)
 
@@ -118,6 +126,24 @@ func TestUpdateShouldThrowIfNoDataIsProvided(t *testing.T) {
 
     want := errors.New("Provide valid data to update an Game")
     _, err := g.UpdateGame(id, updateData)
+
+    if err.Error() != want.Error() {
+        t.Errorf("Expected: %s, got %s", want.Error(), err.Error())
+    }
+}
+
+func TestFindShouldThrowIfNoIdIsProvided(t *testing.T) {
+    repo := new(mockGameRepository)
+    textService := new(mockTextService)
+
+    repo.On("Find", mock.Anything).Return(nil, nil)
+    textService.On("GetRandomText", mock.Anything).Return("bla bla bla bla", nil)
+
+    g := gameService{repo, textService}
+
+    want := errors.New("Invalid ID value") 
+    id := 0
+    _, err := g.FindGame(uint(id))
 
     if err.Error() != want.Error() {
         t.Errorf("Expected: %s, got %s", want.Error(), err.Error())
