@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { ModalInputComponent } from './components/modal-input/modal-input.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { GameComponent } from './pages/game/game.component';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { GameComponent } from './pages/game/game.component';
     ModalInputComponent,
     LoadingComponent,
     GameComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
