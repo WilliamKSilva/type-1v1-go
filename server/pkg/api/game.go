@@ -105,8 +105,12 @@ func (g *gameService) FindGame(id uint) (*Game, error) {
 
     game, err := g.repo.Find(id)
 
-    if err != nil {
+    if game == nil {
         return nil, errors.New("User not found")
+    }
+
+    if err != nil {
+        return nil, err 
     }
     
     return game, nil
