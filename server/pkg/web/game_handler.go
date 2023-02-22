@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -37,6 +38,11 @@ func NewGameHandler (gameService api.GameServiceInterface) *GameHandler {
 }
 
 func (g *GameHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Headers", "*")
+
+    fmt.Println(r)
+
     if r.Method == "POST" {
         g.NewGameFunc(w, r)
         return
