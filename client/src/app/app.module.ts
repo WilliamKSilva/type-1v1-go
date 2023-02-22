@@ -4,8 +4,8 @@ import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ModalInputComponent } from './modal-input/modal-input.component';
-import { LoadingComponent } from './loading/loading.component';
+import { ModalInputComponent } from './components/modal-input/modal-input.component';
+import { LoadingComponent } from './components/loading/loading.component';
 import { GameComponent } from './pages/game/game.component';
 
 @NgModule({
