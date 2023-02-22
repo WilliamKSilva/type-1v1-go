@@ -7,11 +7,24 @@
             who types faster!
         </p>
        </section> 
-       <button class="new-game-button" (click)="openModal()">New Game</button>
-       <button class="enter-game-button">Enter Game</button>
+       <div class="new-game-wrapper">
+           <button class="new-game-button" (click)="openModal()">New Game</button>
+           <ng-container *ngIf="isLoading">
+                <app-loading />
+           </ng-container>
+       </div>
+        <div class="new-game-wrapper">
+           <button class="enter-game-button" (click)="openModal()">Enter Game</button>
+           <ng-container *ngIf="isLoading">
+                <app-loading [isLoading]="isLoading" />
+           </ng-container>
+       </div>
 
-       <app-loading [isLoading]="isLoading" />
-       <app-modal-input [active]="modalActive" (onConfirm)="newGame({playerOne})" (inputText)="updatePlayerOne($event)" />
+       <app-modal-input 
+           [active]="modalActive" 
+           (onConfirm)="newGame({player_one: playerOne})" 
+           (inputText)="updatePlayerOne($event)" 
+       />
     </main>
 </div>
 

@@ -7,8 +7,4 @@ import { Component, Input } from '@angular/core';
 })
 export class LoadingComponent {
     @Input() isLoading: boolean = false
-
-    updateIsLoading (state: boolean): void {
-        this.isLoading = state
-    }
 }

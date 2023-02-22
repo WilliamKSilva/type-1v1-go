@@ -24,6 +24,14 @@
     gap: 2rem;
 }
 
+.new-game-wrapper {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 1rem;
+}
+
 .new-game-button {
     width: 350px;
     border-radius: 5px;

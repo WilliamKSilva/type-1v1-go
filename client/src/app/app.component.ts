@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Game, NewGameData } from './game';
 
 @Component({
@@ -32,7 +31,7 @@ export class AppComponent {
       this.modalActive = true
   }
  
-  newGame (data: NewGameData): Game | undefined {
+  newGame (data: NewGameData): void  {
     this.modalActive = false 
 
     this.isLoading = true
@@ -40,10 +39,6 @@ export class AppComponent {
     this.http.post<Game>(this.gameURL, data).subscribe(data => this.createdGame = data)
 
     this.isLoading = false
-
-    console.log(this.createdGame)
-
-    return this.createdGame
   }
 
 }
