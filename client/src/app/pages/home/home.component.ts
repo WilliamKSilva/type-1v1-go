@@ -32,10 +32,8 @@ export class HomeComponent {
     newGame (data: NewGameData): void  {
         this.modalActive = false 
 
-        this.isLoading = true
-
-        this.http.post<Game>(this.gameURL, data).subscribe(data => this.createdGame = data)
-
         this.isLoading = false
+
+        this.router.navigate(['/games', { id: 1 }])
     }
 }
