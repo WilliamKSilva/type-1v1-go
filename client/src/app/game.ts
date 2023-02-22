@@ -8,5 +8,5 @@ export interface Game {
 }
 
 export type NewGameData = {
-    playerOne?: string
+    player_one?: string
 }
