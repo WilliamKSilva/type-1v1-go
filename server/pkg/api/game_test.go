@@ -158,16 +158,35 @@ func TestFindShouldThrowIfUserNotFound(t *testing.T) {
     repo := new(mockGameRepository)
     textService := new(mockTextService)
 
-    g := gameService{repo, textService}
-    
     repo.On("Find", mock.Anything).Return(nil, nil)
     textService.On("GetRandomText", mock.Anything).Return(nil, nil)
 
+    g := gameService{repo, textService}
+    
     want := errors.New("User not found")
     id := 1
     _, err := g.FindGame(uint(id))
 
     if err.Error() != want.Error() {
         t.Errorf("Expected: %s, got %s", want.Error(), err.Error())
+    }
+}
+
+func TestFindShouldReturnGameOnSuccess(t *testing.T) {
+    repo := new(mockGameRepository)
+    textService := new(mockTextService)
+
+    want := &Game{ID: 1, Text: "bla bla bla bla", PlayerOne: "test", PlayerTwo: "", Status: Waiting, Winner: ""}
+
+    repo.On("Find", mock.Anything).Return(want, nil)
+    textService.On("GetRandomText", mock.Anything).Return(nil, nil)
+
+    g := gameService{repo, textService}
+
+    id := 1
+    game, _ := g.FindGame(uint(id)) 
+
+    if game.ID != want.ID {
+        t.Errorf("Expected: %d, got %d", want.ID, game.ID)
     }
 }
