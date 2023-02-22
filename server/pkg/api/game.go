@@ -41,6 +41,7 @@ type GameRepository interface {
 type GameServiceInterface interface {
     NewGame(data NewGameData) (*Game, error)
     UpdateGame(id uint, data UpdateGameData) (*Game, error)
+    FindGame(id uint) (*Game, error)
     RunGame(player string, id uint, text string) (*Game)
 }
 
@@ -94,6 +95,20 @@ func (g *gameService) UpdateGame(id uint, data UpdateGameData) (*Game, error) {
         return nil, err
     }
 
+    return game, nil
+}
+
+func (g *gameService) FindGame(id uint) (*Game, error) {
+    if id == 0 {
+        return nil, errors.New("Invalid ID value")
+    }
+
+    game, err := g.repo.Find(id)
+
+    if err != nil {
+        return nil, errors.New("User not found")
+    }
+    
     return game, nil
 }
 
