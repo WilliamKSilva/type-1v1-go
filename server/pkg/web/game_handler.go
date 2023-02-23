@@ -30,6 +30,9 @@ type SocketResponse struct {
 var upgrader = websocket.Upgrader{
     ReadBufferSize: 1024,
     WriteBufferSize: 1024,
+    CheckOrigin: func(r *http.Request) bool {
+        return true
+    },
 }
 
 func NewGameHandler (gameService api.GameServiceInterface) *GameHandler {
@@ -168,12 +171,16 @@ func (g *GameHandler) FindGameFunc(w http.ResponseWriter, r *http.Request) {
 
 
 func (g *GameHandler) RunGameFunc(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Headers", "*")
+
     ctx := context.Background()
     ctx, cancel := context.WithTimeout(ctx, time.Minute * 4)
 
     defer cancel()
 
     conn, err := upgrader.Upgrade(w, r, nil)
+
 
     if err != nil {
         log.Println(err)
