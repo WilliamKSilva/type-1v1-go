@@ -52,6 +52,11 @@ func (g *GameHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
         g.UpdateGameFunc(w, r)
         return
     }
+
+    if r.Method == "GET" {
+        g.FindGameFunc(w, r)
+        return
+    }
 }
 
 func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
@@ -61,6 +66,7 @@ func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
     if err != nil {
         w.WriteHeader(http.StatusBadRequest)
         w.Write(nil) 
+        return
     }
 
     err = json.Unmarshal(jsonData, gameData) 
@@ -68,6 +74,7 @@ func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
     if err != nil {
         w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(err.Error())) 
+        return
     }
 
     game, err := g.gameService.NewGame(*gameData)
@@ -75,12 +82,14 @@ func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
     if err != nil {
         w.WriteHeader(http.StatusBadRequest)
         w.Write([]byte(err.Error()))
+        return
     }
 
     response, err := json.Marshal(*game)
 
     w.WriteHeader(http.StatusOK)
     w.Write(response)
+    return
 }
 
 func (g *GameHandler) UpdateGameFunc (w http.ResponseWriter, r *http.Request) {
@@ -125,10 +134,43 @@ func (g *GameHandler) UpdateGameFunc (w http.ResponseWriter, r *http.Request) {
 
     w.WriteHeader(http.StatusOK)
     w.Write(resp)
+    return
+}
+
+func (g *GameHandler) FindGameFunc(w http.ResponseWriter, r *http.Request) {
+    id := r.URL.Query().Get("id")
+
+    convertedId, err := strconv.Atoi(id)
+
+    if err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(err.Error()))
+        return
+    }
+
+    game, err := g.gameService.FindGame(uint(convertedId)) 
+
+    if err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(err.Error()))
+        return
+    }
+
+    json, err := json.Marshal(game)
+
+    if err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(err.Error()))
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write(json)
+    return
 }
 
 
-func (g *GameHandler) RunGameFunc(w  http.ResponseWriter, r *http.Request) {
+func (g *GameHandler) RunGameFunc(w http.ResponseWriter, r *http.Request) {
     ctx := context.Background()
     ctx, cancel := context.WithTimeout(ctx, time.Minute * 4)
 
