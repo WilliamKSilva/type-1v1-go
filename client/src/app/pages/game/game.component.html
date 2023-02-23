@@ -6,7 +6,7 @@
         <div class="player-one">
             <strong>{{game?.playerOne}}</strong>
             <p>{{game?.text}}</p>
-            <input />
+            <input (input)="updateInputText($event)" />
         </div>
         <ng-container *ngIf="game?.playerTwo">
             <div class="player-two">

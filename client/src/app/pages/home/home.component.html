@@ -9,14 +9,14 @@
        </section> 
        <div class="new-game-wrapper">
            <button class="new-game-button" (click)="openModal()">New Game</button>
-           <ng-container *ngIf="isLoading">
-                <app-loading />
+           <ng-container *ngIf="isNewGameLoading">
+                <app-loading [isLoading]="isNewGameLoading" />
            </ng-container>
        </div>
-        <div class="new-game-wrapper">
+        <div class="enter-game-wrapper">
            <button class="enter-game-button" (click)="openModal()">Enter Game</button>
-           <ng-container *ngIf="isLoading">
-                <app-loading [isLoading]="isLoading" />
+           <ng-container *ngIf="isEnterGameLoading">
+                <app-loading [isLoading]="isEnterGameLoading" />
            </ng-container>
        </div>
 

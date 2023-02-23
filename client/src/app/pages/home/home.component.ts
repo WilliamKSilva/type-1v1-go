@@ -16,7 +16,8 @@ export class HomeComponent {
 
     playerOne: string | undefined
 
-    isLoading: boolean = false
+    isNewGameLoading: boolean = false 
+    isEnterGameLoading: boolean = false
 
     modalActive: boolean = false
 
@@ -31,11 +32,11 @@ export class HomeComponent {
     async newGame (data: NewGameData): Promise<void> {
         this.modalActive = false 
 
-        this.isLoading = true 
+        this.isNewGameLoading = true 
 
         const response = await firstValueFrom(this.http.post<Game>(this.gameURL, data))
 
-        this.isLoading = false
+        this.isNewGameLoading = false
 
         this.router.navigate(['/games', { id: response.id }])
     }
