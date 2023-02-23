@@ -6,21 +6,33 @@
     height: 100%;
 }
 
+.game-id-wrapper {
+    margin-top: 5rem;
+}
+
 .game-wrapper {
     margin-top: 9rem;
     width: 100%;
     display: flex;
+    align-items: center;
     justify-content: center;
     gap: 5rem;
     flex-direction: row;
+}
 
-    
+.player-two-waiting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 500px;
 }
 
 .player-one, .player-two {
     display: flex;
     align-items: center;
-    width: 30%;
+    width: 500px;
     justify-content: center;
     flex-direction: column;
     height: 300px;

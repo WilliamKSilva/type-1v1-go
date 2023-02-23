@@ -1,15 +1,26 @@
 <div class="game-container">
+    <section class="game-id-wrapper">
+        <strong>Game ID: {{game?.id}}</strong>
+    </section>
     <div class="game-wrapper">
         <div class="player-one">
             <strong>{{game?.playerOne}}</strong>
             <p>{{game?.text}}</p>
             <input />
         </div>
-        <div class="player-two">
-            <strong>{{game?.playerTwo}}</strong>
-            <p>{{game?.text}}</p>
-            <input />
-        </div>
+        <ng-container *ngIf="game?.playerTwo">
+            <div class="player-two">
+                <strong>{{game?.playerTwo}}</strong>
+                <p>{{game?.text}}</p>
+                <input />
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!game?.playerTwo">
+            <div class="player-two-waiting">
+                <p>Waiting...</p>
+                <app-loading [isLoading]="!game?.playerTwo" />
+            </div>
+        </ng-container>
     </div>
     <button class="start-button">Start</button>
 </div>
