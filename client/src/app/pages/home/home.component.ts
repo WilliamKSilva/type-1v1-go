@@ -19,8 +19,6 @@ export class HomeComponent {
 
     modalActive: boolean = false
 
-    createdGame: Game | undefined
-
     updatePlayerOne(name: string) {
         this.playerOne = name
     } 
@@ -34,6 +32,10 @@ export class HomeComponent {
 
         this.isLoading = false
 
-        this.router.navigate(['/games', { id: 1 }])
+        let game: Game | undefined
+
+        this.http.post<Game>(this.gameURL, data).subscribe(data => game = data)
+
+        this.router.navigate(['/games', { id: game?.id }])
     }
 }
