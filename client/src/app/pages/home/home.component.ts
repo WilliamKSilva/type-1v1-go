@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { Game, NewGameData } from 'src/app/game';
 
 @Component({
@@ -27,15 +28,15 @@ export class HomeComponent {
         this.modalActive = true
     }
  
-    newGame (data: NewGameData): void  {
+    async newGame (data: NewGameData): Promise<void> {
         this.modalActive = false 
+
+        this.isLoading = true 
+
+        const response = await firstValueFrom(this.http.post<Game>(this.gameURL, data))
 
         this.isLoading = false
 
-        let game: Game | undefined
-
-        this.http.post<Game>(this.gameURL, data).subscribe(data => game = data)
-
-        this.router.navigate(['/games', { id: game?.id }])
+        this.router.navigate(['/games', { id: response.id }])
     }
 }

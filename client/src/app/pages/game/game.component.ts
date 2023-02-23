@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { Game } from 'src/app/game';
 
 @Component({
@@ -27,8 +28,7 @@ export class GameComponent implements OnInit {
         this.loading = false
     }
 
-    getGame(id: number | undefined) {
-        this.http.get<Game>(`http://localhost:3000/games/${id}`).subscribe(data => this.game = data)
+    async getGame(id: number | undefined): Promise<void> {
+        this.game = await firstValueFrom(this.http.get<Game>(`http://localhost:3000/games?id=${id}`))
     }
-
 }
