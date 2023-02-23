@@ -15,19 +15,19 @@ const (
 
 type Game struct {
     ID uint `json:"id"` 
-    PlayerOne string `json:"player_one"`
-    PlayerTwo string `json:"player_two"`
+    PlayerOne string `json:"playerOne"`
+    PlayerTwo string `json:"playerTwo"`
     Status string `json:"status"`
     Text string `json:"text"`
     Winner string `json:"Winner"`
 }
 
 type NewGameData struct {
-    PlayerOne string `json:"player_one"` 
+    PlayerOne string `json:"playerOne"` 
 }
 
 type UpdateGameData struct {
-    PlayerTwo string `json:"player_two"` 
+    PlayerTwo string `json:"playerTwo"` 
     Status string `json:"status"`
     Winner string `json:"winner"`
 }
