@@ -1,1 +1,4 @@
 docker-compose.yml
+node_modules
+go.mod
+go.sum
