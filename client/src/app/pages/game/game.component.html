@@ -1,14 +1,15 @@
 <div class="game-container">
     <div class="game-wrapper">
         <div class="player-one">
-            <strong>You</strong>
-            <p>Lorem ipsum</p>
+            <strong>{{game?.playerOne}}</strong>
+            <p>{{game?.text}}</p>
             <input />
         </div>
         <div class="player-two">
-            <strong>Opponent</strong>
-            <p>Lorem ipsum</p>
+            <strong>{{game?.playerTwo}}</strong>
+            <p>{{game?.text}}</p>
             <input />
         </div>
     </div>
+    <button class="start-button">Start</button>
 </div>

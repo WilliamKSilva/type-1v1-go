@@ -1,5 +1,7 @@
 .game-container {
     display: flex;
+    align-items: center;
+    flex-direction: column;
     width: 100%;
     height: 100%;
 }
@@ -39,3 +41,10 @@
         background-color: gray;
     }
 } 
+
+.start-button {
+    width: 120px;
+    margin-top: 4rem;
+    padding: 0.5rem;
+    border: 0;
+}
