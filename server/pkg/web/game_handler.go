@@ -15,229 +15,203 @@ import (
 )
 
 type GameHandler struct {
-    gameService api.GameServiceInterface 
-    cacheService api.CacheService
-}
-
-type RunGameData struct {
-    Player string `json:"player"` 
-    Text string `json:"text"` 
-    Id string `json:"id"`
+	gameService  api.GameServiceInterface
+	cacheService api.CacheService
 }
 
 type SocketResponse struct {
-    Message string `json:"message"`
+	Message string `json:"message"`
 }
 
 var upgrader = websocket.Upgrader{
-    ReadBufferSize: 1024,
-    WriteBufferSize: 1024,
-    CheckOrigin: func(r *http.Request) bool {
-        return true
-    },
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
-func NewGameHandler (gameService api.GameServiceInterface, cacheService api.CacheService) *GameHandler {
-    return &GameHandler{gameService, cacheService}
+func NewGameHandler(gameService api.GameServiceInterface, cacheService api.CacheService) *GameHandler {
+	return &GameHandler{gameService, cacheService}
 }
 
-func (g *GameHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Headers", "*")
+func (g *GameHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
 
-    if r.Method == "POST" {
-        g.NewGameFunc(w, r)
-        return
-    }
+	if r.Method == "POST" {
+		g.NewGameFunc(w, r)
+		return
+	}
 
-    if r.Method == "PUT" {
-        g.UpdateGameFunc(w, r)
-        return
-    }
+	if r.Method == "PUT" {
+		g.UpdateGameFunc(w, r)
+		return
+	}
 
-    if r.Method == "GET" {
-        g.FindGameFunc(w, r)
-        return
-    }
+	if r.Method == "GET" {
+		g.FindGameFunc(w, r)
+		return
+	}
 }
 
-func (g *GameHandler) NewGameFunc (w http.ResponseWriter, r *http.Request) {
-    gameData := &api.NewGameData{}
-    jsonData, err := io.ReadAll(r.Body)
+func (g *GameHandler) NewGameFunc(w http.ResponseWriter, r *http.Request) {
+	gameData := &api.NewGameData{}
+	jsonData, err := io.ReadAll(r.Body)
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write(nil) 
-        return
-    }
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(nil)
+		return
+	}
 
-    err = json.Unmarshal(jsonData, gameData) 
+	err = json.Unmarshal(jsonData, gameData)
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error())) 
-        return
-    }
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    game, err := g.gameService.NewGame(*gameData)
+	game, err := g.gameService.NewGame(*gameData)
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    response, err := json.Marshal(*game)
+	response, err := json.Marshal(*game)
 
-    w.WriteHeader(http.StatusOK)
-    w.Write(response)
-    return
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
+	return
 }
 
-func (g *GameHandler) UpdateGameFunc (w http.ResponseWriter, r *http.Request) {
+func (g *GameHandler) UpdateGameFunc(w http.ResponseWriter, r *http.Request) {
+	updateGameData := &api.UpdateGameData{}
+	id := r.URL.Query().Get("id")
 
-    updateGameData := &api.UpdateGameData{}
-    id := r.URL.Query().Get("id")
+	body := r.Body
+	data, err := io.ReadAll(body)
 
-    body := r.Body
-    data, err := io.ReadAll(body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
+	json.Unmarshal(data, updateGameData)
 
-    json.Unmarshal(data, updateGameData) 
+	u64, err := strconv.Atoi(id)
 
-    u64, err := strconv.Atoi(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
+	game, err := g.gameService.UpdateGame(uint(u64), *updateGameData)
 
-    game, err := g.gameService.UpdateGame(uint(u64), *updateGameData)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
+	resp, err := json.Marshal(game)
 
-    resp, err := json.Marshal(game)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
-
-    w.WriteHeader(http.StatusOK)
-    w.Write(resp)
-    return
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
+	return
 }
 
 func (g *GameHandler) FindGameFunc(w http.ResponseWriter, r *http.Request) {
-    id := r.URL.Query().Get("id")
+	id := r.URL.Query().Get("id")
 
-    convertedId, err := strconv.Atoi(id)
+	convertedId, err := strconv.Atoi(id)
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    game, err := g.gameService.FindGame(uint(convertedId)) 
+	game, err := g.gameService.FindGame(uint(convertedId))
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    json, err := json.Marshal(game)
+	json, err := json.Marshal(game)
 
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
-    w.WriteHeader(http.StatusOK)
-    w.Write(json)
-    return
+	w.WriteHeader(http.StatusOK)
+	w.Write(json)
+	return
 }
-
 
 func (g *GameHandler) RunGameFunc(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Access-Control-Allow-Origin", "*")
-    w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
 
-    ctx := context.Background()
-    ctx, cancel := context.WithTimeout(ctx, time.Minute * 4)
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, time.Minute*4)
 
-    defer cancel()
+	defer cancel()
 
-    conn, err := upgrader.Upgrade(w, r, nil)
+	conn, err := upgrader.Upgrade(w, r, nil)
 
-    if err != nil {
-        log.Println(err)
-        return
-    }
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-    g.SocketMessageReceiver(ctx, conn)
+	g.SocketMessageReceiver(ctx, conn)
 
-    return
+	return
 }
 
-func (g *GameHandler) SocketMessageReceiver (ctx context.Context, conn *websocket.Conn) {
-    for {
-        select {
-        case <- ctx.Done():
-            json := &SocketResponse{Message: "time expired"}
-            conn.WriteJSON(json)
-            conn.Close()
+func (g *GameHandler) SocketMessageReceiver(ctx context.Context, conn *websocket.Conn) {
+	for {
+		select {
+		case <-ctx.Done():
+			json := &SocketResponse{Message: "time expired"}
+			conn.WriteJSON(json)
+			conn.Close()
 
-            return
-        default:
-            runGameData := &RunGameData{} 
-            conn.ReadJSON(runGameData)
+			return
+		default:
+			runGameData := &api.GameState{}
+			conn.ReadJSON(runGameData)
 
-            convertedId, _ := strconv.Atoi(runGameData.Id)
+			convertedId, _ := strconv.Atoi(runGameData.GameID)
 
-            fmt.Println(runGameData, convertedId)
+			g.cacheService.Store(runGameData)
+            gameState := g.cacheService.ReadAll()
 
-            game := g.gameService.RunGame(runGameData.Player, uint(convertedId), runGameData.Text)
+            fmt.Println(gameState)
+			game := g.gameService.RunGame(runGameData.Player, uint(convertedId), runGameData.Text)
 
-            if game != nil {
-                conn.WriteJSON(game)
-                conn.Close()
+			if game != nil {
+				conn.WriteJSON(game)
+				conn.Close()
 
-                return
-            }
-        }
-    } 
-}
-
-func (g *GameHandler) StoreGameCache (w http.ResponseWriter, r *http.Request) {
-    gameState := &api.GameState{}
-    body := r.Body 
-
-    data, err := io.ReadAll(body)
-
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte(err.Error()))
-        return
-    }
-
-    json.Unmarshal(data, gameState)
-
-    g.cacheService.Store(gameState)
-
-    w.WriteHeader(http.StatusOK)
-    w.Write([]byte("Game state stored!"))
+				return
+			}
+		}
+	}
 }

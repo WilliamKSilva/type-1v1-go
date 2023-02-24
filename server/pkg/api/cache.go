@@ -1,5 +1,9 @@
 package api
 
+import (
+	"sync"
+)
+
 type GameState struct {
     GameID string `json:"gameId"`
     Player string `json:"player"`
@@ -7,26 +11,36 @@ type GameState struct {
 }
 
 type CacheService interface {
-    Store (gameState *GameState) error
-    Read (id string) *GameState 
+    Store (gameState *GameState)
+    Read (id string) *GameState
+    ReadAll () map[string]*GameState
 }
 
 type cacheService struct {
-    cacheMap map[string]*GameState
+    mu sync.Mutex
+    v map[string]*GameState
 }
 
-func NewCacheService (cacheMap map[string]*GameState) *cacheService {
-    return &cacheService{cacheMap} 
-}
+func (c *cacheService) Store (game *GameState) {
+    c.mu.Lock()
 
-func (c *cacheService) Store (gameState *GameState) error {
-    c.cacheMap[gameState.GameID] = gameState 
+    c.v[game.GameID] = game
 
-    return nil
+    c.mu.Unlock()
 }
 
 func (c *cacheService) Read (id string) *GameState {
-    gameState := c.cacheMap[id]
+    c.mu.Lock()
 
-    return gameState
+    defer c.mu.Unlock()
+
+    return c.v[id]
+}
+
+func (c *cacheService) ReadAll () map[string]*GameState {
+    return c.v
+}
+
+func NewCacheService (cacheMap map[string]*GameState) *cacheService {
+    return &cacheService{v: cacheMap} 
 }

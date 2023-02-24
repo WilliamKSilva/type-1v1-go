@@ -13,11 +13,10 @@ func main() {
 	db := mysql.Connect()
     cacheMap := make(map[string]*api.GameState)
 
-    gameHandler := pkg.MakeGameHandler(db, cacheMap) 
+    gameHandler := pkg.MakeGameHandler(db, cacheMap)
 
 	http.Handle("/games", gameHandler)
     http.HandleFunc("/games/run", gameHandler.RunGameFunc)
-    http.HandleFunc("/games/cache", gameHandler.StoreGameCache)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }
