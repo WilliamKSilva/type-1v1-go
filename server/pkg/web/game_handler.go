@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 
 type GameHandler struct {
     gameService api.GameServiceInterface 
+    cacheService api.CacheService
 }
 
 type RunGameData struct {
@@ -35,8 +37,8 @@ var upgrader = websocket.Upgrader{
     },
 }
 
-func NewGameHandler (gameService api.GameServiceInterface) *GameHandler {
-    return &GameHandler{gameService}
+func NewGameHandler (gameService api.GameServiceInterface, cacheService api.CacheService) *GameHandler {
+    return &GameHandler{gameService, cacheService}
 }
 
 func (g *GameHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
@@ -181,7 +183,6 @@ func (g *GameHandler) RunGameFunc(w http.ResponseWriter, r *http.Request) {
 
     conn, err := upgrader.Upgrade(w, r, nil)
 
-
     if err != nil {
         log.Println(err)
         return
@@ -207,6 +208,8 @@ func (g *GameHandler) SocketMessageReceiver (ctx context.Context, conn *websocke
 
             convertedId, _ := strconv.Atoi(runGameData.Id)
 
+            fmt.Println(runGameData, convertedId)
+
             game := g.gameService.RunGame(runGameData.Player, uint(convertedId), runGameData.Text)
 
             if game != nil {
@@ -217,4 +220,24 @@ func (g *GameHandler) SocketMessageReceiver (ctx context.Context, conn *websocke
             }
         }
     } 
+}
+
+func (g *GameHandler) StoreGameCache (w http.ResponseWriter, r *http.Request) {
+    gameState := &api.GameState{}
+    body := r.Body 
+
+    data, err := io.ReadAll(body)
+
+    if err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte(err.Error()))
+        return
+    }
+
+    json.Unmarshal(data, gameState)
+
+    g.cacheService.Store(gameState)
+
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Game state stored!"))
 }

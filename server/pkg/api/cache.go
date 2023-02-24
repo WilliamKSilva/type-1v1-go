@@ -8,11 +8,15 @@ type GameState struct {
 
 type CacheService interface {
     Store (gameState *GameState) error
-    Read (id uint) *GameState 
+    Read (id string) *GameState 
 }
 
 type cacheService struct {
     cacheMap map[string]*GameState
+}
+
+func NewCacheService (cacheMap map[string]*GameState) *cacheService {
+    return &cacheService{cacheMap} 
 }
 
 func (c *cacheService) Store (gameState *GameState) error {
