@@ -11,7 +11,7 @@ import (
 
 func main() {
 	db := mysql.Connect()
-    cacheMap := make(map[string]*api.GameState)
+    cacheMap := make(map[string]map[string]*api.GameState)
 
     gameHandler := pkg.MakeGameHandler(db, cacheMap)
 

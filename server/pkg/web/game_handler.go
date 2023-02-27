@@ -201,9 +201,9 @@ func (g *GameHandler) SocketMessageReceiver(ctx context.Context, conn *websocket
 			convertedId, _ := strconv.Atoi(runGameData.GameID)
 
 			g.cacheService.Store(runGameData)
-            gameState := g.cacheService.ReadAll()
+			gameState := g.cacheService.ReadAll(runGameData.GameID)
 
-            fmt.Println(gameState)
+			fmt.Println(gameState)
 			game := g.gameService.RunGame(runGameData.Player, uint(convertedId), runGameData.Text)
 
 			if game != nil {

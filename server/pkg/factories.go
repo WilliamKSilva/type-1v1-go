@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func MakeGameHandler (db *gorm.DB, cacheMap map[string]*api.GameState) *web.GameHandler {
+func MakeGameHandler (db *gorm.DB, cacheMap map[string]map[string]*api.GameState) *web.GameHandler {
     gameRepository := mysql.NewGameRepository(db)
     textService := ex.NewTextService() 
     gameService := api.NewGameService(gameRepository, textService)
